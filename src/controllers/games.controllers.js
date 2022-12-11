@@ -24,7 +24,14 @@ export async function createGames(req, res) {
         return res.status(400).send("Favor colocar um estoque e valor por dia valido!")
     }
 
+
     try {
+        const gameExist = await db.query(`SELECT * FROM games WHERE name=$1;`, [name]);
+
+        if (gameExist.rows.length > 0) {
+            return res.status(409).send("Jogo ja existente no banco de dados!")
+        }
+
         const categoryExist = await db.query(`SELECT * FROM categories WHERE id=$1;`, [categoryId]);
 
         if (!categoryExist.rows.length > 0) {
